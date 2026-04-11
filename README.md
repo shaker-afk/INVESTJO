@@ -1,54 +1,164 @@
-> Edited for use in IDX on 07/09/12
+# INVESTJO 📈
 
-# Welcome to your Expo app 👋
+A mobile investment platform for Jordan, built with [React Native](https://reactnative.dev/) and [Expo](https://expo.dev/).
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+---
 
-## Get started
+## Prerequisites
 
-#### Android
+Before running the app, make sure you have the following installed:
 
-Android previews are defined as a `workspace.onStart` hook and started as a vscode task when the workspace is opened/started.
+- [Node.js](https://nodejs.org/) (v18 or later recommended)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/) — install globally:
+  ```bash
+  npm install -g expo-cli
+  ```
+- [Expo Go](https://expo.dev/go) app on your iOS or Android device — for quick previews without a simulator
 
-Note, if you can't find the task, either:
-- Rebuild the environment (using command palette: `IDX: Rebuild Environment`), or
-- Run `npm run android -- --tunnel` command manually run android and see the output in your terminal. The device should pick up this new command and switch to start displaying the output from it.
+---
 
-In the output of this command/task, you'll find options to open the app in a
+## Getting Started
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You'll also find options to open the app's developer menu, reload the app, and more.
-
-#### Web
-
-Web previews will be started and managred automatically. Use the toolbar to manually refresh.
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Clone the repository
 
 ```bash
-npm run reset-project
+git clone https://github.com/shaker-afk/INVESTJO.git
+cd INVESTJO
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Install dependencies
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Start the Expo development server
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm start
+# or equivalently:
+npx expo start
+```
 
-## Join the community
+This launches the **Expo DevTools** in your terminal. You'll see a QR code and several options to open the app.
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-"# INVESTJO" 
+## Running on a Device or Emulator
+
+Once the dev server is running, choose how you want to open the app:
+
+### 📱 Physical Device (Expo Go) — Easiest
+
+1. Install **Expo Go** on your phone:
+   - [Android (Google Play)](https://play.google.com/store/apps/details?id=host.exp.exponent)
+   - [iOS (App Store)](https://apps.apple.com/app/expo-go/id982107779)
+2. Make sure your phone and computer are on the **same Wi-Fi network**.
+3. Scan the QR code shown in the terminal with:
+   - **Android**: The Expo Go app's built-in QR scanner
+   - **iOS**: The native Camera app
+
+> If you're on a restricted network, start with tunnel mode instead:
+>
+> ```bash
+> npx expo start --tunnel
+> ```
+
+---
+
+### 🤖 Android Emulator
+
+1. Install [Android Studio](https://developer.android.com/studio) and set up an Android Virtual Device (AVD).
+2. Start the emulator from Android Studio (or `emulator -avd <name>`).
+3. Run:
+   ```bash
+   npm run android
+   # or:
+   npx expo start --android
+   ```
+
+---
+
+### 🍎 iOS Simulator (macOS only)
+
+1. Install [Xcode](https://developer.apple.com/xcode/) from the Mac App Store.
+2. Run:
+   ```bash
+   npm run ios
+   # or:
+   npx expo start --ios
+   ```
+
+---
+
+### 🌐 Web Browser
+
+```bash
+npm run web
+# or:
+npx expo start --web
+```
+
+> Web support is experimental and may not reflect the full mobile experience.
+
+---
+
+## Project Structure
+
+```
+INVESTJO/
+├── app/              # File-based routing (Expo Router)
+├── src/
+│   ├── components/   # Reusable UI components (atoms, molecules, etc.)
+│   ├── screens/      # Screen-level components
+│   └── constants/    # Theme, colors, typography
+├── assets/           # Images, icons, fonts
+├── app.json          # Expo app configuration
+└── package.json      # Dependencies and scripts
+```
+
+---
+
+## Available Scripts
+
+| Command           | Description                               |
+| ----------------- | ----------------------------------------- |
+| `npm start`       | Start the Expo dev server                 |
+| `npm run android` | Start and open on Android emulator/device |
+| `npm run ios`     | Start and open on iOS simulator           |
+| `npm run web`     | Start in web browser                      |
+| `npm run lint`    | Run ESLint on the project                 |
+
+---
+
+## Troubleshooting
+
+**Metro bundler stuck or crashing?**
+
+```bash
+npx expo start --clear
+```
+
+**Dependencies out of sync?**
+
+```bash
+npx expo install --fix
+```
+
+**Can't connect on physical device?**  
+Try tunnel mode:
+
+```bash
+npx expo start --tunnel
+```
+
+> This requires `@expo/ngrok` which is already included as a dependency.
+
+---
+
+## Learn More
+
+- [Expo Documentation](https://docs.expo.dev/)
+- [Expo Router](https://docs.expo.dev/router/introduction/)
+- [React Native Documentation](https://reactnative.dev/docs/getting-started)
