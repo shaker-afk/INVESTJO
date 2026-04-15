@@ -9,6 +9,7 @@ import { Tabs } from 'expo-router';
 
 import CustomTabBar from '../../src/components/organisms/CustomTabBar';
 import { useTranslation } from '../../src/hooks/useTranslation';
+import AIRegulatoryAssistant from '../../src/screens/AIRegulatoryAssistant';
 
 export default function TabLayout() {
   const { lang } = useTranslation();
@@ -23,11 +24,12 @@ export default function TabLayout() {
   );
 
   return (
-    <Tabs
-      tabBar={renderTabBar}
-      screenOptions={{ headerShown: false }}
-    >
-      {/* 1 — Discovery Dashboard */}
+    <>
+      <Tabs
+        tabBar={renderTabBar}
+        screenOptions={{ headerShown: false }}
+      >
+        {/* 1 — Discovery Dashboard */}
       <Tabs.Screen
         name="index"
         options={{ title: 'Discovery' }}
@@ -57,5 +59,7 @@ export default function TabLayout() {
         options={{ href: null }}
       />
     </Tabs>
+    <AIRegulatoryAssistant />
+    </>
   );
 }
