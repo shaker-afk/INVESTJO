@@ -95,10 +95,8 @@ export default function ManageScreen() {
             </View>
 
           </View>
-          <Text style={[styles.listingTitle, isRTL && { textAlign: 'right' }]}>Al-Zarqa Industrial Hub Phase II</Text>
-          <Text style={[styles.listingDesc, isRTL && { textAlign: 'right' }]}>
-            Strategic logistics and warehousing expansive project located in the heart of th...
-          </Text>
+          <Text style={[styles.listingTitle, isRTL && { textAlign: 'right' }]}>{t('zarqaListingTitle')}</Text>
+          <Text style={[styles.listingDesc, isRTL && { textAlign: 'right' }]}>{t('zarqaListingDesc')}</Text>
           <View style={[styles.listingFooter, isRTL && { flexDirection: 'row-reverse' }]}>
             <View style={[styles.avatars, isRTL && { flexDirection: 'row-reverse' }]}>
               <View style={[styles.avatarStack, { zIndex: 2, backgroundColor: '#374151' }]} />
@@ -121,10 +119,8 @@ export default function ManageScreen() {
             </View>
 
           </View>
-          <Text style={[styles.listingTitle, isRTL && { textAlign: 'right' }]}>Aqaba Coastal Hospitality Bond</Text>
-          <Text style={[styles.listingDesc, isRTL && { textAlign: 'right' }]}>
-            Fixed-income sovereign instrument for the redevelopment of the Aqaba waterfront...
-          </Text>
+          <Text style={[styles.listingTitle, isRTL && { textAlign: 'right' }]}>{t('aqabaListingTitle')}</Text>
+          <Text style={[styles.listingDesc, isRTL && { textAlign: 'right' }]}>{t('aqabaListingDesc')}</Text>
           <View style={[styles.listingFooter, isRTL && { flexDirection: 'row-reverse' }]}>
             <Text style={styles.complianceText}>{t('underComplianceReview')}</Text>
             <TouchableOpacity style={styles.editBtn} onPress={() => router.push('/create-listing')}>

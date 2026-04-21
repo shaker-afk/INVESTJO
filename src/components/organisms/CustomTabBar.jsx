@@ -19,7 +19,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Animated,
-  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -104,18 +103,11 @@ function TabButton({ tab, isFocused, onPress, onLongPress, lang }) {
           { transform: [{ scale: scaleAnim }] },
         ]}
       >
-        {tab.name === 'profile' ? (
-          <Image 
-            source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} 
-            style={{ width: 26, height: 26, borderRadius: 13, opacity: isFocused ? 1 : 0.6 }} 
-          />
-        ) : (
-          <Ionicons
-            name={isFocused ? tab.iconActive : tab.iconInactive}
-            size={22}
-            color={isFocused ? Colors.onPrimary : Colors.onSurfaceVariant}
-          />
-        )}
+        <Ionicons
+          name={isFocused ? tab.iconActive : tab.iconInactive}
+          size={22}
+          color={isFocused ? Colors.onPrimary : Colors.onSurfaceVariant}
+        />
       </Animated.View>
 
       {/* Label */}

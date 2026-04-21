@@ -158,6 +158,13 @@ const translations = {
     logistics: 'Logistics',
     edTech: 'EdTech',
     cybersecurity: 'Cybersecurity',
+    // Common Header
+    sovereignLedger: 'Sovereign Ledger',
+    // Manage Screen - Listing Content
+    zarqaListingTitle: 'Al-Zarqa Industrial Hub Phase II',
+    zarqaListingDesc: 'Strategic logistics and warehousing expansive project located in the heart of th...',
+    aqabaListingTitle: 'Aqaba Coastal Hospitality Bond',
+    aqabaListingDesc: 'Fixed-income sovereign instrument for the redevelopment of the Aqaba waterfront...',
     // Activity Modal
     allActivity: 'All Activity',
     profileUpdated: 'Profile Updated',
@@ -308,6 +315,13 @@ const translations = {
     logistics: 'لوجستيات',
     edTech: 'تكنولوجيا التعليم',
     cybersecurity: 'أمن سيبراني',
+    // Common Header
+    sovereignLedger: 'السجل السيادي',
+    // Manage Screen - Listing Content
+    zarqaListingTitle: 'مركز الزرقاء الصناعي - المرحلة الثانية',
+    zarqaListingDesc: 'مشروع لوجستي وتخزيني استراتيجي واسع النطاق يقع في قلب...',
+    aqabaListingTitle: 'سند الضيافة الساحلي في العقبة',
+    aqabaListingDesc: 'أداة سيادية ذات دخل ثابت لإعادة تطوير الواجهة البحرية في العقبة...',
     // Activity Modal
     allActivity: 'كل النشاط',
     profileUpdated: 'تم تحديث الملف الشخصي',

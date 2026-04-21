@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -17,6 +17,15 @@ const Colors = {
 export default function CreateListingModal() {
   const router = useRouter();
   const { t, isRTL } = useTranslation();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      router.back();
+    }, 800);
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -25,7 +34,7 @@ export default function CreateListingModal() {
           <Feather name="x" size={24} color={Colors.navy} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('newListingTitle')}</Text>
-        <View style={{ width: 24 }} /> {/* Balance for center title */}
+        <View style={{ width: 24 }} />{/* Balance for center title */}
       </View>
 
       <ScrollView contentContainerStyle={styles.formContainer}>
@@ -69,11 +78,15 @@ export default function CreateListingModal() {
           </View>
         </View>
 
-        <TouchableOpacity 
-          style={styles.submitBtn}
-          onPress={() => router.back()}
+        <TouchableOpacity
+          style={[styles.submitBtn, loading && { opacity: 0.7 }]}
+          onPress={handleSubmit}
+          disabled={loading}
         >
-          <Text style={styles.submitBtnText}>{t('createListing')}</Text>
+          {loading
+            ? <ActivityIndicator color={Colors.white} />
+            : <Text style={styles.submitBtnText}>{t('createListing')}</Text>
+          }
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

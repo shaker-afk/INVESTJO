@@ -9,15 +9,16 @@ const Colors = {
   white: '#FFFFFF',
 };
 
-export default function CommonHeader({ title = 'Sovereign Ledger', isDark = false, style }) {
-  const { lang, isRTL, toggleLanguage } = useTranslation();
+export default function CommonHeader({ title = undefined, isDark = false, style = undefined }) {
+  const { t, lang, isRTL, toggleLanguage } = useTranslation();
   const textColor = isDark ? Colors.white : Colors.navy;
+  const displayTitle = title ?? t('sovereignLedger');
 
   return (
     <View style={[styles.headerRow, isRTL && { flexDirection: 'row-reverse' }, style]}>
       <View style={[styles.headerLeft, isRTL && { flexDirection: 'row-reverse' }]}>
         <Ionicons name="star" size={16} color={textColor} style={{marginTop: -2}} />
-        <Text style={[styles.headerBrand, { color: textColor }]}>{title}</Text>
+        <Text style={[styles.headerBrand, { color: textColor }]}>{displayTitle}</Text>
       </View>
       <View style={[styles.headerRight, isRTL && { flexDirection: 'row-reverse' }]}>
         <LanguageToggle lang={lang} onToggle={toggleLanguage} />

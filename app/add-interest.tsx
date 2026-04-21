@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -35,6 +35,15 @@ export default function AddInterestModal() {
 
   const [search, setSearch] = useState('');
   const [mappedInterests, setMappedInterests] = useState(ALL_INTERESTS);
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      setSaving(false);
+      router.back();
+    }, 600);
+  };
 
   const toggleInterest = (id: string) => {
     setMappedInterests(mappedInterests.map(i => 
@@ -53,8 +62,11 @@ export default function AddInterestModal() {
           <Feather name="x" size={24} color={Colors.navy} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('safeAddInterests')}</Text>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.saveText}>{t('save')}</Text>
+        <TouchableOpacity onPress={handleSave} disabled={saving}>
+          {saving
+            ? <ActivityIndicator color={Colors.gold} />
+            : <Text style={styles.saveText}>{t('save')}</Text>
+          }
         </TouchableOpacity>
       </View>
 

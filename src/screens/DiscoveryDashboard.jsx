@@ -269,11 +269,11 @@ export default function DiscoveryDashboard() {
       result = result.filter((l) => filters.sectors.includes(l.sector));
     }
 
-    // FilterContext — capital range
+    // FilterContext — capital range (overlap: listing range intersects the bucket)
     if (filters.capitalBucket) {
       const { min, max } = filters.capitalBucket;
       result = result.filter(
-        (l) => l.capitalMin >= min && l.capitalMax <= (max === Infinity ? 99999999 : max)
+        (l) => l.capitalMax >= min && l.capitalMin <= max
       );
     }
 

@@ -9,7 +9,7 @@
  *  - Jordanian 7-pointed star watermark on premium cards
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -84,8 +84,8 @@ export default function InvestmentCard({
   const description = lang === 'ar' ? listing.descriptionAr : listing.descriptionEn;
   const sectorLabel = lang === 'ar' ? listing.sectorAr : listing.sector;
 
-  // Prefer local bundled asset; fall back to remote URL
   const imageSource = listing.imageSource ?? { uri: listing.imageUrl };
+  const [imgError, setImgError] = useState(false);
 
   const handlePress = useCallback(() => onPress?.(listing), [listing, onPress]);
 
@@ -99,11 +99,18 @@ export default function InvestmentCard({
     >
       {/* Project Image */}
       <View style={styles.imageContainer}>
-        <Image
-          source={imageSource}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        {imgError ? (
+          <View style={[styles.image, styles.imgPlaceholder]}>
+            <Ionicons name="image-outline" size={32} color={Colors.onSurfaceVariant} />
+          </View>
+        ) : (
+          <Image
+            source={imageSource}
+            style={styles.image}
+            resizeMode="cover"
+            onError={() => setImgError(true)}
+          />
+        )}
         {/* Jordanian Star Watermark — decorative quality mark */}
         <Text style={styles.starWatermark}>✦</Text>
 
@@ -187,6 +194,11 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
+  },
+  imgPlaceholder: {
+    backgroundColor: Colors.surfaceContainerHigh,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   starWatermark: {
     position: 'absolute',

@@ -4,7 +4,7 @@
  * Uses a full-bleed image with a glassmorphism overlay.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -35,6 +35,8 @@ export default function FeaturedCard({
   investLabel,
   onPress,
 }) {
+  const [imgError, setImgError] = useState(false);
+
   if (!listing) return null;
 
   const title = lang === 'ar' ? listing.titleAr : listing.titleEn;
@@ -52,11 +54,16 @@ export default function FeaturedCard({
       accessibilityLabel={title}
     >
       {/* Full-bleed image */}
-      <Image
-        source={listing.imageSource ?? { uri: listing.imageUrl }}
-        style={styles.image}
-        resizeMode="cover"
-      />
+      {imgError ? (
+        <View style={[styles.image, styles.imgPlaceholder]} />
+      ) : (
+        <Image
+          source={listing.imageSource ?? { uri: listing.imageUrl }}
+          style={styles.image}
+          resizeMode="cover"
+          onError={() => setImgError(true)}
+        />
+      )}
 
       {/* Gradient overlay for text legibility */}
       <LinearGradient
@@ -109,6 +116,9 @@ const styles = StyleSheet.create({
   },
   image: {
     ...StyleSheet.absoluteFillObject,
+  },
+  imgPlaceholder: {
+    backgroundColor: Colors.primaryContainer,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
