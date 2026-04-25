@@ -149,7 +149,7 @@ const MOCK_LISTINGS = [
 export async function fetchListings() {
   // Simulate network latency
   await new Promise((resolve) => setTimeout(resolve, 500));
-  return MOCK_LISTINGS;
+  return [...MOCK_LISTINGS];
 }
 
 /**
@@ -179,4 +179,60 @@ export async function fetchListingsBySector(sector) {
   return MOCK_LISTINGS.filter(
     (l) => l.sector.toLowerCase() === sector.toLowerCase()
   );
+}
+
+/**
+ * Creates a new listing.
+ * Currently pushes to MOCK_LISTINGS for local persistence.
+ *
+ * @param {Object} listingData - The new listing data
+ * @returns {Promise<Object>} The created listing object
+ */
+export async function createListing(listingData) {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const newListing = {
+    id: `listing_00${MOCK_LISTINGS.length + 1}`,
+    ...listingData,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    trendingCount: 0,
+    raisedAmount: 0,
+    status: 'active',
+  };
+  MOCK_LISTINGS.unshift(newListing); // Insert at the beginning
+  return newListing;
+}
+
+/**
+ * Updates an existing listing.
+ *
+ * @param {string} id - The listing document ID
+ * @param {Object} updates - The data to update
+ * @returns {Promise<Object>} The updated listing object
+ */
+export async function updateListing(id, updates) {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const index = MOCK_LISTINGS.findIndex((l) => l.id === id);
+  if (index === -1) throw new Error('Listing not found');
+  
+  MOCK_LISTINGS[index] = {
+    ...MOCK_LISTINGS[index],
+    ...updates,
+    updatedAt: new Date().toISOString(),
+  };
+  return MOCK_LISTINGS[index];
+}
+
+/**
+ * Deletes a listing.
+ *
+ * @param {string} id - The listing document ID
+ * @returns {Promise<void>}
+ */
+export async function deleteListing(id) {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const index = MOCK_LISTINGS.findIndex((l) => l.id === id);
+  if (index > -1) {
+    MOCK_LISTINGS.splice(index, 1);
+  }
 }

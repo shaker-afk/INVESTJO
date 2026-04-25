@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '../src/hooks/useTranslation';
+import { useProfile } from '../src/contexts/ProfileContext';
+import { getSectorInterestsMeta } from '../src/constants/sectorInterests';
 
 const Colors = {
   background: '#FAFAFC',
@@ -20,26 +22,24 @@ const Colors = {
 export default function AddInterestModal() {
   const router = useRouter();
   const { t, isRTL } = useTranslation();
+  const { sectorInterests, setSectorInterests } = useProfile();
   
-  const ALL_INTERESTS: Array<{ id: string, name: string, icon: string, selected: boolean }> = [
-    { id: '1', name: String(t('greenEnergy')), icon: 'leaf-outline', selected: true },
-    { id: '2', name: String(t('realEstate')), icon: 'business-outline', selected: true },
-    { id: '3', name: String(t('medTech')), icon: 'shield-checkmark-outline', selected: true },
-    { id: '4', name: String(t('finTech')), icon: 'card-outline', selected: true },
-    { id: '5', name: String(t('agriTech')), icon: 'flower-outline', selected: true },
-    { id: '6', name: String(t('artificialIntelligence')), icon: 'hardware-chip-outline', selected: false },
-    { id: '7', name: String(t('logistics')), icon: 'boat-outline', selected: false },
-    { id: '8', name: String(t('edTech')), icon: 'book-outline', selected: false },
-    { id: '9', name: String(t('cybersecurity')), icon: 'lock-closed-outline', selected: false },
-  ];
+  const ALL_INTERESTS = getSectorInterestsMeta(t);
 
   const [search, setSearch] = useState('');
-  const [mappedInterests, setMappedInterests] = useState(ALL_INTERESTS);
+  const [mappedInterests, setMappedInterests] = useState(() => 
+    ALL_INTERESTS.map(sector => ({
+      ...sector,
+      selected: sectorInterests.includes(sector.id)
+    }))
+  );
   const [saving, setSaving] = useState(false);
 
   const handleSave = () => {
     setSaving(true);
     setTimeout(() => {
+      const selectedIds = mappedInterests.filter(i => i.selected).map(i => i.id);
+      setSectorInterests(selectedIds);
       setSaving(false);
       router.back();
     }, 600);

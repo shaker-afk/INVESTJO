@@ -5,6 +5,8 @@ import { Ionicons, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from '../../src/hooks/useTranslation';
 import CommonHeader from '../../src/components/organisms/CommonHeader';
+import { useProfile } from '../../src/contexts/ProfileContext';
+import { getSectorInterestsMeta } from '../../src/constants/sectorInterests';
 
 const LocalColors = {
   background: '#FAFAFC', 
@@ -26,9 +28,13 @@ const LocalColors = {
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function ProfileScreen() {
-  const [activeTab, setActiveTab] = useState<'Investor' | 'Company'>('Investor');
+  const { activeProfile, setActiveProfile, sectorInterests } = useProfile();
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const router = useRouter();
   const { t, isRTL } = useTranslation();
+
+  const allSectors = getSectorInterestsMeta(t);
+  const activeSectorsData = allSectors.filter(s => sectorInterests.includes(s.id));
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -42,10 +48,6 @@ export default function ProfileScreen() {
               <View style={styles.avatarPlaceholder}>
                 <Ionicons name="person" size={40} color={LocalColors.white} />
               </View>
-              {/* PRO Badge */}
-              <View style={[styles.proBadge, isRTL ? { left: -10, right: 'auto' } : { right: -10, left: 'auto' }]}>
-                <Text style={styles.proBadgeText}>{t('pro')}</Text>
-              </View>
             </View>
             <View style={styles.profileInfo}>
               <Text style={[styles.profileName, isRTL && { textAlign: 'right' }]}>Ahmad Al-{'\n'}Fahad</Text>
@@ -56,18 +58,18 @@ export default function ProfileScreen() {
           {/* Toggle Switch */}
           <View style={[styles.toggleContainer, isRTL && { flexDirection: 'row-reverse' }]}>
             <TouchableOpacity 
-              style={[styles.toggleBtn, activeTab === 'Investor' && styles.toggleActive]}
-              onPress={() => setActiveTab('Investor')}
+              style={[styles.toggleBtn, activeProfile === 'Investor' && styles.toggleActive]}
+              onPress={() => setActiveProfile('Investor')}
             >
-              <Text style={[styles.toggleBtnText, activeTab === 'Investor' && styles.toggleActiveText]}>
+              <Text style={[styles.toggleBtnText, activeProfile === 'Investor' && styles.toggleActiveText]}>
                 {t('investor')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              style={[styles.toggleBtn, activeTab === 'Company' && styles.toggleActive]}
-              onPress={() => setActiveTab('Company')}
+              style={[styles.toggleBtn, activeProfile === 'Company' && styles.toggleActive]}
+              onPress={() => setActiveProfile('Company')}
             >
-              <Text style={[styles.toggleBtnText, activeTab === 'Company' && styles.toggleActiveText]}>
+              <Text style={[styles.toggleBtnText, activeProfile === 'Company' && styles.toggleActiveText]}>
                 {t('company')}
               </Text>
             </TouchableOpacity>
@@ -80,27 +82,12 @@ export default function ProfileScreen() {
             <Text style={styles.sectorsTitle}>{t('sectorInterests')}</Text>
           </View>
           <View style={[styles.chipsRow, isRTL && { flexDirection: 'row-reverse' }]}>
-            {/* Chips */}
-            <View style={[styles.chip, isRTL && { flexDirection: 'row-reverse' }]}>
-              <Ionicons name="leaf-outline" size={14} color="#556B2F" />
-              <Text style={styles.chipText}>{t('greenEnergy')}</Text>
-            </View>
-            <View style={[styles.chip, isRTL && { flexDirection: 'row-reverse' }]}>
-              <Ionicons name="business-outline" size={14} color="#8D6E63" />
-              <Text style={styles.chipText}>{t('realEstate')}</Text>
-            </View>
-            <View style={[styles.chip, isRTL && { flexDirection: 'row-reverse' }]}>
-              <Ionicons name="shield-checkmark-outline" size={14} color="#D4AF37" />
-              <Text style={styles.chipText}>{t('medTech')}</Text>
-            </View>
-            <View style={[styles.chip, isRTL && { flexDirection: 'row-reverse' }]}>
-              <Ionicons name="card-outline" size={14} color="#8D6E63" />
-              <Text style={styles.chipText}>{t('finTech')}</Text>
-            </View>
-            <View style={[styles.chip, isRTL && { flexDirection: 'row-reverse' }]}>
-              <Ionicons name="flower-outline" size={14} color="#556B2F" />
-              <Text style={styles.chipText}>{t('agriTech')}</Text>
-            </View>
+            {activeSectorsData.map(sector => (
+              <View key={sector.id} style={[styles.chip, isRTL && { flexDirection: 'row-reverse' }]}>
+                <Ionicons name={sector.icon as any} size={14} color={sector.color} />
+                <Text style={styles.chipText}>{sector.name}</Text>
+              </View>
+            ))}
           </View>
           
           <TouchableOpacity style={[styles.addInterestBtn, isRTL && { flexDirection: 'row-reverse' }]} onPress={() => router.push('/add-interest')}>
@@ -125,7 +112,7 @@ export default function ProfileScreen() {
           <Feather name="star" size={120} color="rgba(255,255,255,0.03)" style={[styles.securityBgStar, isRTL ? { left: -20, right: 'auto' } : { right: -20, left: 'auto' }]} />
         </View>
 
-        {/* Notification Hub */}
+        {/* Notification Hub -> Notifications */}
         <View style={styles.hubContainer}>
           <View style={[styles.hubHeader, isRTL && { flexDirection: 'row-reverse' }]}>
             <Text style={styles.hubTitle}>{t('notificationHub')}</Text>
@@ -166,46 +153,31 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          {/* Notif 3 */}
-          <View style={[styles.notifRow, isRTL && { flexDirection: 'row-reverse' }]}>
-            <View style={[styles.notifIcon, { backgroundColor: LocalColors.goldBg }, isRTL ? { marginLeft: 16, marginRight: 0 } : { marginRight: 16 }]}>
-              <Ionicons name="document-text" size={16} color={LocalColors.navy} />
-            </View>
-            <View style={styles.notifContent}>
-              <View style={[styles.notifTitleRow, isRTL && { flexDirection: 'row-reverse' }]}>
-                <Text style={[styles.notifTitle, isRTL ? { paddingLeft: 10, paddingRight: 0, textAlign: 'right' } : { paddingRight: 10 }]}>{t('documentStatusUpdate')}</Text>
-                <Text style={styles.notifTime}>{t('timeAgo4H')}</Text>
-              </View>
-              <Text style={[styles.notifText, isRTL && { textAlign: 'right' }]}>
-                Your KYC Verification for the 'Desert Pearl' development has been <Text style={styles.approvedText}>{t('approved')}</Text>
-              </Text>
-              <View style={[styles.attachmentChip, isRTL && { flexDirection: 'row-reverse' }]}>
-                <Ionicons name="document-text" size={14} color={LocalColors.textMuted} />
-                <Text style={styles.attachmentName}>verification_seal_v2.pdf</Text>
-                <Feather name="download" size={14} color={LocalColors.textMuted} style={isRTL ? {marginRight: 'auto'} : {marginLeft: 'auto'}} />
-              </View>
-            </View>
-          </View>
-
-          {/* Notif 4 */}
-          <View style={[styles.notifRow, isRTL && { flexDirection: 'row-reverse' }]}>
-            <View style={[styles.notifIcon, { backgroundColor: LocalColors.goldBg }, isRTL ? { marginLeft: 16, marginRight: 0 } : { marginRight: 16 }]}>
-              <MaterialCommunityIcons name="shield-check" size={16} color={LocalColors.navy} />
-            </View>
-            <View style={styles.notifContent}>
-              <View style={[styles.notifTitleRow, isRTL && { flexDirection: 'row-reverse' }]}>
-                <Text style={[styles.notifTitle, isRTL ? { paddingLeft: 10, paddingRight: 0, textAlign: 'right' } : { paddingRight: 10 }]}>{t('loginDetected')}</Text>
-                <Text style={styles.notifTime}>{t('yesterday')}</Text>
-              </View>
-              <Text style={[styles.notifText, isRTL && { textAlign: 'right' }]}>
-                A successful login was recorded from a new Safari browser in Amman, Jordan.
-              </Text>
-            </View>
-          </View>
-
           <TouchableOpacity style={styles.viewAllActivity} onPress={() => router.push('/activity')}>
             <Text style={styles.viewAllActivityText}>{t('viewAllActivity')}</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* FAQ Panel */}
+        <View style={styles.faqContainer}>
+          <View style={[styles.hubHeader, isRTL && { flexDirection: 'row-reverse' }]}>
+            <Text style={styles.hubTitle}>{t('faqTitle')}</Text>
+          </View>
+          {[1, 2, 3, 4, 5].map((num) => (
+            <TouchableOpacity 
+              key={num} 
+              style={[styles.faqItem, isRTL && { alignItems: 'flex-end' }]} 
+              onPress={() => setExpandedFaq(expandedFaq === num ? null : num)}
+            >
+              <View style={[styles.faqQuestionRow, isRTL && { flexDirection: 'row-reverse' }]}>
+                <Text style={[styles.faqQuestionText, isRTL && { textAlign: 'right' }]}>{t(`faqQ${num}`)}</Text>
+                <Feather name={expandedFaq === num ? "chevron-up" : "chevron-down"} size={18} color={LocalColors.navy} />
+              </View>
+              {expandedFaq === num && (
+                <Text style={[styles.faqAnswerText, isRTL && { textAlign: 'right' }]}>{t(`faqA${num}`)}</Text>
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
 
         <View style={{height: 100}} />
@@ -452,6 +424,39 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 1,
   },
+  faqContainer: {
+    backgroundColor: LocalColors.white,
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.02,
+    shadowRadius: 10,
+    elevation: 1,
+  },
+  faqItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: LocalColors.lightGray,
+    paddingVertical: 14,
+  },
+  faqQuestionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  faqQuestionText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: LocalColors.navy,
+    flex: 1,
+  },
+  faqAnswerText: {
+    fontSize: 13,
+    color: LocalColors.textMuted,
+    marginTop: 10,
+    lineHeight: 20,
+  },
   hubHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -560,4 +565,3 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
-

@@ -1,10 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useTranslation } from '../../src/hooks/useTranslation';
 import CommonHeader from '../../src/components/organisms/CommonHeader';
+import { useProfile } from '../../src/contexts/ProfileContext';
+import { fetchListings, deleteListing } from '../../src/services/firebase/listingService';
 
 const LocalColors = {
   background: '#FAFAFC', 
@@ -29,6 +31,36 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function ManageScreen() {
   const router = useRouter();
   const { t, isRTL } = useTranslation();
+  const { activeProfile } = useProfile();
+  const [myListings, setMyListings] = useState([]);
+
+  const loadMyListings = useCallback(async () => {
+    const data = await fetchListings();
+    setMyListings(data);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (activeProfile === 'Company') {
+        loadMyListings();
+      }
+    }, [activeProfile, loadMyListings])
+  );
+
+  const handleDelete = (id) => {
+    Alert.alert(
+      "Delete Listing",
+      "Are you sure you want to delete this listing?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", style: "destructive", onPress: async () => {
+            await deleteListing(id);
+            loadMyListings();
+          }
+        }
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -39,6 +71,7 @@ export default function ManageScreen() {
         <View style={styles.pageTitles}>
           <Text style={[styles.entityDash, isRTL && { textAlign: 'right' }]}>{t('entityDashboard')}</Text>
           <Text style={[styles.companyName, isRTL && { textAlign: 'right' }]}>Petra Holdings Ltd.</Text>
+          {activeProfile === 'Company' && (
           <TouchableOpacity 
             style={[styles.createBtn, isRTL && { flexDirection: 'row-reverse', alignSelf: 'flex-end' }]} 
             onPress={() => router.push('/create-listing')}
@@ -46,6 +79,7 @@ export default function ManageScreen() {
             <Feather name="plus" size={16} color={LocalColors.white} />
             <Text style={styles.createBtnText}>{t('createListing')}</Text>
           </TouchableOpacity>
+          )}
         </View>
 
         {/* Engagement Tracker Card */}
@@ -85,49 +119,48 @@ export default function ManageScreen() {
         </View>
 
         {/* Your Listings Section */}
-
-
-        {/* Listing Card: Live */}
-        <View style={styles.listingCard}>
-          <View style={[styles.listingHeader, isRTL && { flexDirection: 'row-reverse' }]}>
-            <View style={styles.liveBadge}>
-              <Text style={styles.liveBadgeText}>{t('live')}</Text>
-            </View>
-
-          </View>
-          <Text style={[styles.listingTitle, isRTL && { textAlign: 'right' }]}>{t('zarqaListingTitle')}</Text>
-          <Text style={[styles.listingDesc, isRTL && { textAlign: 'right' }]}>{t('zarqaListingDesc')}</Text>
-          <View style={[styles.listingFooter, isRTL && { flexDirection: 'row-reverse' }]}>
-            <View style={[styles.avatars, isRTL && { flexDirection: 'row-reverse' }]}>
-              <View style={[styles.avatarStack, { zIndex: 2, backgroundColor: '#374151' }]} />
-              <View style={[styles.avatarStack, { zIndex: 1, marginLeft: -10, backgroundColor: '#4B5563' }]} />
-              <View style={[styles.avatarStack, { zIndex: 0, marginLeft: -10, backgroundColor: LocalColors.lightGray, alignItems: 'center', justifyContent: 'center' }]}>
-                <Text style={{ fontSize: 10, color: LocalColors.textMuted }}>+12</Text>
+        {activeProfile === 'Company' && (
+          <>
+        {myListings.map(listing => (
+          <View key={listing.id} style={styles.listingCard}>
+            <View style={[styles.listingHeader, isRTL && { flexDirection: 'row-reverse' }]}>
+              <View style={listing.status === 'active' ? styles.liveBadge : styles.pendingBadge}>
+                <Text style={listing.status === 'active' ? styles.liveBadgeText : styles.pendingBadgeText}>
+                  {listing.status === 'active' ? t('live') : t('pending')}
+                </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.editBtn} onPress={() => router.push('/create-listing')}>
-              <Text style={styles.editBtnText}>{t('edit')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Listing Card: Pending */}
-        <View style={styles.listingCard}>
-          <View style={[styles.listingHeader, isRTL && { flexDirection: 'row-reverse' }]}>
-            <View style={styles.pendingBadge}>
-              <Text style={styles.pendingBadgeText}>{t('pending')}</Text>
+            <Text style={[styles.listingTitle, isRTL && { textAlign: 'right' }]}>
+              {isRTL ? listing.titleAr || listing.titleEn : listing.titleEn}
+            </Text>
+            <Text style={[styles.listingDesc, isRTL && { textAlign: 'right' }]} numberOfLines={2}>
+              {isRTL ? listing.descriptionAr || listing.descriptionEn : listing.descriptionEn}
+            </Text>
+            <View style={[styles.listingFooter, isRTL && { flexDirection: 'row-reverse' }]}>
+              <View style={[styles.avatars, isRTL && { flexDirection: 'row-reverse' }]}>
+                {listing.status === 'active' ? (
+                  <>
+                    <View style={[styles.avatarStack, { zIndex: 2, backgroundColor: '#374151' }]} />
+                    <View style={[styles.avatarStack, { zIndex: 1, marginLeft: -10, backgroundColor: '#4B5563' }]} />
+                    <View style={[styles.avatarStack, { zIndex: 0, marginLeft: -10, backgroundColor: LocalColors.lightGray, alignItems: 'center', justifyContent: 'center' }]}>
+                      <Text style={{ fontSize: 10, color: LocalColors.textMuted }}>+12</Text>
+                    </View>
+                  </>
+                ) : (
+                  <Text style={styles.complianceText}>{t('underComplianceReview')}</Text>
+                )}
+              </View>
+              <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', gap: 8, alignItems: 'center' }}>
+                <TouchableOpacity style={styles.editBtn} onPress={() => router.push({ pathname: '/create-listing', params: { id: listing.id } })}>
+                  <Text style={styles.editBtnText}>{t('edit')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleDelete(listing.id)} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+                  <Feather name="trash-2" size={18} color="#EF4444" />
+                </TouchableOpacity>
+              </View>
             </View>
-
           </View>
-          <Text style={[styles.listingTitle, isRTL && { textAlign: 'right' }]}>{t('aqabaListingTitle')}</Text>
-          <Text style={[styles.listingDesc, isRTL && { textAlign: 'right' }]}>{t('aqabaListingDesc')}</Text>
-          <View style={[styles.listingFooter, isRTL && { flexDirection: 'row-reverse' }]}>
-            <Text style={styles.complianceText}>{t('underComplianceReview')}</Text>
-            <TouchableOpacity style={styles.editBtn} onPress={() => router.push('/create-listing')}>
-              <Text style={styles.editBtnText}>{t('edit')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        ))}
 
         {/* New Listing Card */}
         <TouchableOpacity style={styles.newListingCard} onPress={() => router.push('/create-listing')}>
@@ -137,8 +170,11 @@ export default function ManageScreen() {
           <Text style={styles.newListingTitle}>{t('newListingTitle')}</Text>
           <Text style={styles.newListingSub}>{t('newListingDesc')}</Text>
         </TouchableOpacity>
+        </>
+        )}
 
         {/* Document Vault Section */}
+        {activeProfile === 'Investor' && (
         <View style={styles.vaultSection}>
           <View style={[styles.vaultHeader, isRTL && { flexDirection: 'row-reverse' }]}>
             <View style={styles.vaultIconContainer}>
@@ -184,6 +220,7 @@ export default function ManageScreen() {
             <Ionicons name="checkmark-circle" size={18} color={LocalColors.gold} />
           </View>
         </View>
+        )}
 
         {/* Extra spacing at bottom for tab bar padding */}
         <View style={{height: 100}} />

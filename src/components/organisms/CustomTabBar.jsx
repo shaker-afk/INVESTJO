@@ -51,9 +51,9 @@ const TABS = [
     iconInactive: 'briefcase-outline',
   },
   {
-    name: 'profile',
-    labelEn: 'PROFILE',
-    labelAr: 'ملفي',
+    name: 'hub',
+    labelEn: 'HUB',
+    labelAr: 'المركز',
     iconActive: 'person',
     iconInactive: 'person-outline',
   },

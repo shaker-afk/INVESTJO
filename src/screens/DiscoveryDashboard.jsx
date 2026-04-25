@@ -26,7 +26,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 // Services
@@ -252,9 +252,11 @@ export default function DiscoveryDashboard() {
     }
   }, []);
 
-  useEffect(() => {
-    loadListings();
-  }, [loadListings]);
+  useFocusEffect(
+    useCallback(() => {
+      loadListings();
+    }, [loadListings])
+  );
 
   // ── Filtering logic ──────────────────────────────────────────────────────
   useEffect(() => {

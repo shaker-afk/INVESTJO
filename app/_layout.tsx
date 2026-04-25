@@ -12,6 +12,7 @@ import {
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { FilterProvider } from '../src/contexts/FilterContext';
 import { LanguageProvider } from '../src/contexts/LanguageContext';
+import { ProfileProvider } from '../src/contexts/ProfileContext';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -48,6 +49,7 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
     <LanguageProvider>
+      <ProfileProvider>
       <FilterProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack>
@@ -102,6 +104,7 @@ export default function RootLayout() {
           <StatusBar style="auto" />
         </ThemeProvider>
       </FilterProvider>
+      </ProfileProvider>
     </LanguageProvider>
     </ErrorBoundary>
   );

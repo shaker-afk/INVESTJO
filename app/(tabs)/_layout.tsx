@@ -47,10 +47,10 @@ export default function TabLayout() {
         options={{ title: 'Manage' }}
       />
 
-      {/* 4 — User Profile */}
+      {/* 4 — User Profile / Hub */}
       <Tabs.Screen
-        name="profile"
-        options={{ title: 'Profile' }}
+        name="hub"
+        options={{ title: 'Hub' }}
       />
 
       {/* Hide the legacy explore tab — keep file to avoid bundle errors */}
